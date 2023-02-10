@@ -4,7 +4,7 @@ import sys
 import pygame
 import requests
 
-print('Введите широту и долготу через пробел:')
+print('Введите долготу(-179; 179) и широту(-85; 85) через пробел:')
 sp = input().split()
 print('Введите маштаб карты в виде spn:')
 span = input()
