@@ -1,0 +1,48 @@
+import os
+import sys
+
+import pygame
+import requests
+
+
+def big():
+    pass
+
+
+print('Введите долготу(-179; 179) и широту(-85; 85) через пробел:')
+sp = input().split()
+print('Введите маштаб карты в виде spn:')
+span = input()
+map_params = {
+        "ll": ','.join(sp),
+        "spn": span + ',' + span,
+        "l": "map"}
+map_api_server = "http://static-maps.yandex.ru/1.x/"
+response = requests.get(map_api_server, params=map_params)
+
+if not response:
+    print("Ошибка выполнения запроса:")
+    print("Http статус:", response.status_code, "(", response.reason, ")")
+    sys.exit(1)
+
+map_file = "map.png"
+with open(map_file, "wb") as file:
+    file.write(response.content)
+
+pygame.init()
+screen = pygame.display.set_mode((600, 450))
+screen.blit(pygame.image.load(map_file), (0, 0))
+pygame.display.flip()
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.KEYDOWN:
+            if pygame.key.get_pressed()[pygame.K_PAGEUP]:
+                span += 0.05
+            elif pygame.key.get_pressed()[pygame.K_PAGEDOWN]:
+                span -= 0.05
+    pygame.display.flip()
+pygame.quit()
+os.remove(map_file)
